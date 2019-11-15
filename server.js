@@ -95,41 +95,38 @@ app.get( '/blog-post', (req, res, next) =>{
 });*/
 
 
-app.post( "/blog-post", jsonParser, ( req, res, next ) => {
-    let title = req.body.title;
-    let content = req.body.content;
-    let author = req.body.author;
-    let date = req.body.publishDate;
+app.post("/blog-posts", jsonParser, (req, res, next) => {
+    let newPost = {
+        title: "", 
+        content: "", 
+        id: "", 
+        publishDate: "", 
+        author: ""
+    };
+    newPost.author = req.body.author;
+    newPost.title = req.body.title;
+    newPost.publishDate = req.body.publishDate;
+    newPost.content = req.body.content;
+    newPost.id = uuid.v4();
 
-    if(!title || !content || !author || !date) {        
-        return res.status(406).json({
-            status: 406,
-            message: "Missing field in body"
+    if (!newPost.id || !newPost.title || !newPost.content || !newPost.publishDate || !newPost.author) {
+        res.statusMessage = "Missing field in the body";
+        return res.status(406).json( {
+            message: "Missing field in the body",
+            status: 406
         });
     }
-
-    let newPost = {
-        id : uuid.v4(),
-        title : title,
-        content : content,
-        author : author,
-        publishDate : date
-    };
-
+  
     PostList.post(newPost)
-        .then( post => {
-            return res.status( 201 ).json({
-                message : "Post added to the list",
-                status : 201,
-                post : post
-            });
+        .then(post => {
+            return res.status(201).json(post);
         })
-        .catch( error => {
-            res.statusMessage = "Something went wrong with the DB. Try again later.";
-            return res.status( 500 ).json({
-                status : 500,
-                message : "Something went wrong with the DB. Try again later."
-            });
+        .catch(err => {
+            res.statusMessage = "Something went wrong with the DB";
+            return res.status(500).json({
+                message: "Something went wrong with the DB",
+                status: 500
+            })
         });
 });
 
