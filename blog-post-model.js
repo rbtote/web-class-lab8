@@ -35,8 +35,8 @@ let PostList = {
                 throw Error( error );
             });
     },
-    update: function(updatedPost) {
-        return blogPost.findOneAndUpdate({id:updatedPost.id}, {$set:{updatedPost}})
+    update: function(updPost) {
+        return blogPost.updateOne({id:updPost.id}, updPost)
             .then( post => {
                 return post;
             })
