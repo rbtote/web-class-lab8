@@ -17,7 +17,7 @@ let blogPost = mongoose.model( 'blogPost', blogSchema );
 
 let PostList = {
     get: function(){
-        return Post.find()
+        return blogPost.find()
             .then( posts => {
                 return posts;
             })
@@ -27,7 +27,7 @@ let PostList = {
 		
 	},
     post: function(newPost) {
-        return Post.create(newPost)
+        return blogPost.create(newPost)
             .then( post => {
                 return post;
             })
@@ -36,7 +36,7 @@ let PostList = {
             });
     },
     update: function(updatedPost) {
-        return Post.findOneAndUpdate({id:updatedPost.id}, {$set:{updatedPost}})
+        return blogPost.findOneAndUpdate({id:updatedPost.id}, {$set:{updatedPost}})
             .then( post => {
                 return post;
             })
@@ -45,7 +45,7 @@ let PostList = {
             });
     },
     delete: function(postID) {
-        return Post.findOneAndRemove({id:postID})
+        return blogPost.findOneAndRemove({id:postID})
             .then( post => {
                 return post;
             })
