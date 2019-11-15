@@ -49,12 +49,7 @@ let list = [
         publishDate: new Date ("December 25, 1999 22:55:00")
     }
 ];
-/*
-app.get( '/blog-posts', (req, res, next) =>{
-	return res.status(200).json(list);
-	console.log(list);
-});
-*/
+
 app.get( "/blog-posts", ( req, res, next ) => {
     PostList.get()
         .then( posts => {
@@ -68,32 +63,6 @@ app.get( "/blog-posts", ( req, res, next ) => {
             })
         });
 });
-/*
-//http://localhost:8080/blog-post?author=val
-app.get( '/blog-post', (req, res, next) =>{
-	let author = req.query.author;	
-	let postsA = [];
-	console.log("Req auth", author);
-	if(!author){
-		return res.status(406).json({
-			code : 406,
-			message : "Missing Author param"
-		});
-	}
-	for(let i = 0; i<list.length; i++){
-		if (author == list[i].author){			
-			postsA.push(list[i])
-		}
-	}
-	if(postsA.length == 0){
-		return res.status(404).json({
-			code : 404,
-			message : "Author not found"
-		});
-	}
-	return res.status(200).json(postsA);
-});*/
-
 
 app.post("/blog-posts", jsonParser, (req, res, next) => {
     let newPost = {
@@ -130,66 +99,51 @@ app.post("/blog-posts", jsonParser, (req, res, next) => {
         });
 });
 
-/*
-app.delete( "/blog-posts/:id", (req,res) => {
-	let id = req.params.id;
-	let found = false;
-	let index = -1;	
-	for(let i = 0; i<list.length; i++){
-		if (id == list[i].id){			
-			found = true;
-			index = i;
-		}
-	}
-	if(!found){
-		return res.status(404).json({
-			code : 404,
-			message : "Post Id not found"
-		});
-	}
-	list.splice(index,1);
-	return res.status(200).json({
-		code : 200,
-		message : "Post deleted"
-	});
+app.delete("/blog-posts/:id", jsonParser, (req, res, next) => {
+    PostList.delete(req.params.id)
+        .then(post => {
+            return res.status(201).json(post);
+        })
+        .catch(err => {
+            res.statusMessage = "Something went wrong with the DB";
+            return res.status(500).json({
+                message: "Something went wrong with the DB",
+                status: 500
+            })
+        });
 });
 
-app.put("/blog-posts/:id", jsonParser,(req,res) =>{
-	
-    let paramId = req.params.id;
-	let bodyId = req.body.id;
-    let title = req.body.title;
-    let content = req.body.content;
-    let author = req.body.author;
-    let date = req.body.publishDate;
-
-    if(!req.body) {
+app.put("/blog-posts/:id", jsonParser, (req, res, next) => {
+    if (req.body.id) {
+        if (req.body.id == req.params.id) {
+            PostList.update(req.body)
+                .then(post => {
+                    return res.status(201).json(post);
+                })
+                .catch(err => {
+                    res.statusMessage = "Something went wrong with the DB";
+                    return res.status(500).json({
+                        message: "Something went wrong with the DB",
+                        status: 500
+                    })
+                });
+        } else {
+            res.statusMessage = "ID in param does not match with ID in body";
+            return res.status(409).json({
+                code: 409,
+                message: res.statusMessage
+            });
+        }
+    } else {
+        res.statusMessage = "Missing ID in body";
         return res.status(406).json({
-        	code: 406,
-        	message: "Missing field in body"
+            code: 406,
+            message: res.statusMessage
         });
     }
 
-    if(paramId != bodyId){
-    	return res.status(409).json({
-    		code: 409,
-    		message: "Body and params Id do not match"    	
-    	});
-    }
-
-    for(let i = 0; i<list.length; i++){
-		if (paramId == list[i].id){			
-			list[i].title 		= title ? title : list[i].title;
-    		list[i].content 	= content ? content : list[i].content;
-    		list[i].author 		= author ? author : list[i].author;
-    		list[i].publishDate = date ? date : list[i].publishDate;
-
-    		let updPost = list[i];
-    		return res.status(202).json(updPost);
-		}
-	}
 });
-*/
+
 let server;
 
 

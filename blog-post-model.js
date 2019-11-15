@@ -16,24 +16,43 @@ let blogPost = mongoose.model( 'blogPost', blogSchema );
 
 
 let PostList = {
-	get : function(){
-		return blogPost.find()
-				.then( posts => {
-					return posts;
-				})
-				.catch( error => {
-					throw Error( error );
-				});
+    get: function(){
+        return Post.find()
+            .then( posts => {
+                return posts;
+            })
+            .catch( error => {
+                throw Error( error );
+            });
+		
 	},
-	post : function( newPost ){
-		return blogPost.create( newPost )
-				.then( post => {
-					return post;
-				})
-				.catch( error => {
-					throw Error(error);
-				});
-	}
+    post: function(newPost) {
+        return Post.create(newPost)
+            .then( post => {
+                return post;
+            })
+            .catch( error => {
+                throw Error( error );
+            });
+    },
+    update: function(updatedPost) {
+        return Post.findOneAndUpdate({id:updatedPost.id}, {$set:{updatedPost}})
+            .then( post => {
+                return post;
+            })
+            .catch( error => {
+                throw Error( error );
+            });
+    },
+    delete: function(postID) {
+        return Post.findOneAndRemove({id:postID})
+            .then( post => {
+                return post;
+            })
+            .catch( error => {
+                throw Error( error );
+            });
+    }
 };
 
 module.exports = { PostList };
