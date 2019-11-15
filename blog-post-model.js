@@ -2,33 +2,33 @@ let mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-let roberto-blog-post = mongoose.Schema({	
+let blogSchema = mongoose.Schema({	
 	title : { type : String },
-	content : 		{ type : String },
-	author : 		{ type : String },
-	publishDate : 	{ type : Date },
+	content : { type : String },
+	author : { type : String },
+	publishDate : { type : Date },
 	id : { 
-			type : Number,
+			type : String,
 			required : true }
 });
 
-let Pet = mongoose.model( 'roberto-blog-post', petSchema );
+let blogPost = mongoose.model( 'blogPost', blogSchema );
 
 
-let PetList = {
+let BlogList = {
 	get : function(){
-		return Pet.find()
-				.then( pets => {
-					return pets;
+		return blogPost.find()
+				.then( posts => {
+					return posts;
 				})
 				.catch( error => {
 					throw Error( error );
 				});
 	},
-	post : function( newPet ){
-		return Pet.create( newPet )
-				.then( pet => {
-					return pet;
+	post : function( newPost ){
+		return blogPost.create( newPost )
+				.then( post => {
+					return post;
 				})
 				.catch( error => {
 					throw Error(error);
@@ -36,6 +36,4 @@ let PetList = {
 	}
 };
 
-module.exports = { PetList };
-
-
+module.exports = { BlogList };
