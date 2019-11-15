@@ -1,17 +1,23 @@
 let express = require('express');
 let morgan = require('morgan');
-let mongoose = require( "mongoose" );
-let bodyParser = require('body-parser');
-let { PostList } = require('./blog-post-model');
-let { DATABASE_URL, PORT } = require('./config');
-let uuid = require('uuid');
+let bp = require('body-parser');
+let jsonParser = bp.json();
+let uuid = require("uuid");
+
+let mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+let {PostList} = require('./blog-post-model');
+
+let {DATABASE_URL, PORT} = require('./config');
 
 let app = express();
-let jsonParser = bodyParser.json();
-mongoose.Promise = global.Promise;
 
-app.use(express.static("public"));
-app.use(morgan("dev"));
+app.use(express.static('public'));
+app.use(morgan('dev'));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
 
 let list = [
     {

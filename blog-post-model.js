@@ -15,7 +15,7 @@ let blogSchema = mongoose.Schema({
 let blogPost = mongoose.model( 'blogPost', blogSchema );
 
 
-let BlogList = {
+let PostList = {
 	get : function(){
 		return blogPost.find()
 				.then( posts => {
@@ -36,4 +36,4 @@ let BlogList = {
 	}
 };
 
-module.exports = { BlogList };
+module.exports = { PostList };
